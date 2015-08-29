@@ -1,0 +1,26 @@
+{
+  "name": "node-red-contrib-nats",
+  "version": "0.0.1",
+  "description": "nats Node-RED",
+  "author": {
+    "name": "morikat",
+    "email": "morika-t@outlook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/morikat/node-red-contrib-nats.git"
+  },
+  "dependencies": {
+    "cf-nodejs-client": "0.0.6",
+    "nats": "^0.4.2"
+  },
+  "keywords": [
+    "node-red"
+  ],
+  "node-red": {
+    "nodes": {
+      "nats": "nats.js"
+    }
+  },
+  "license": "MIT"
+}
