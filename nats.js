@@ -12,7 +12,7 @@ module.exports = function(RED) {
       var server = 'nats://' + config.user + ':' + config.pass + '@' + this.address + ':' + this.port + '/';
 
       this.nc = nats.connect({'servers': [server]});
-      console.log('nats server connect:' + server);
+      //console.log('nats server connect:' + server);
       
       var node = this;
 
@@ -46,7 +46,7 @@ module.exports = function(RED) {
       var nats = require('nats');
       var server = 'nats://' + config.user + ':' + config.pass + '@' + this.address + ':' + this.port + '/';
       this.nc = nats.connect({'servers': [server]});
-      console.log('nats server connect:' + server);
+      //console.log('nats server connect:' + server);
       var node = this;
 
       this.on('input', function(msg) {
