@@ -1,5 +1,3 @@
-var nats = require('nats');
-
 module.exports = function(RED) {
 
   function NatsPubNode(config) {

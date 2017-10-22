@@ -28,6 +28,7 @@ Functionality supported an ToDo
 - [x] Subscription
 - [x] Request/reply (without timeout)
 - [ ] Request/reply (with timeout)
+- [x] Configuration node
 - [ ] Node status
 - [ ] Credentials
 - [ ] Improve documentation
