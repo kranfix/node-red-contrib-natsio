@@ -1,18 +1,21 @@
 {
-  "name": "nore-red-contrib-natsio",
+  "name": "node-red-contrib-natsio",
   "version": "0.0.5",
-  "description": "nats Node-RED",
+  "description": "Nats.io protocol with Node-RED",
   "author": "kranfix <frankmoreno1993@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kranfix/node-red-contrib-natsio.git"
+    "url": "git+ssh://github.com/kranfix/node-red-contrib-natsio.git"
   },
   "dependencies": {
     "cf-nodejs-client": "0.0.6",
-    "nats": "^0.4.2"
+    "nats": "^0.7.24"
   },
   "keywords": [
-    "node-red","nats","nats.io","pub/sub"
+    "node-red",
+    "nats",
+    "nats.io",
+    "pub/sub"
   ],
   "node-red": {
     "nodes": {
@@ -23,7 +26,7 @@
   "bugs": {
     "url": "https://github.com/kranfix/node-red-contrib-natsio/issues"
   },
-  "homepage": "https://github.com/morikat/node-red-contrib-natsio#readme",
+  "homepage": "https://github.com/kranfix/node-red-contrib-natsio#readme",
   "main": "nats.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
