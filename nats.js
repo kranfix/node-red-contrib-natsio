@@ -131,5 +131,5 @@ module.exports = function(RED) {
       }
     });
   }
-  RED.nodes.registerType("nats-pub",NatsPubNode);
+  RED.nodes.registerType("nats-request",NatsPubNode);
 }
