@@ -55,7 +55,7 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       //this.subject = msg.replyTo || msg.topic || config.subject;
       console.log('pub: ',msg.replyTo)
-      this.subject = msg.replyTo || config.subject;
+      this.subject = msg.replyTo || msg.topic || config.subject;
       this.message = msg.payload || config.message;
       //console.log('subject: ' + this.subject + ' message: ' + this.message);
 
@@ -86,16 +86,16 @@ module.exports = function(RED) {
     var node = this;
 
     node.on('input', function(msg) {
-      this.subject = msg.topic || config.subjec;
+      this.subject = msg.replyTo || msg.topic || config.subjec;
       this.message = msg.payload || config.message
       console.log('subject: ' + this.subject);
 
       if(this.subject){
-        this.nc.request(this.subject, function(response) {
-          //console.log('Got a response in msg stream: ' + response);
+        node.nc.request(this.subject, function(response) {
+          console.log('Got a response in msg stream: ' + response);
+          msg.payload = response
           node.send(msg);
         })
-        this.nc.publish(this.subject, this.message);
       }
     });
 
