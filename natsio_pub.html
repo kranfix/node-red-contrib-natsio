@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-pub',{
+    category: 'NatsIO',
+    color: '#3FADB5',
+    defaults: {
+      server: {value:"", type:"remote-server", required:true},
+      subject: {value:""},
+      message: {value:""}
+    },
+    inputs:1,
+    outputs:0,
+    icon: "bridge.png",
+    label: "nats-pub"
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-pub">
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-tag"></i> server</label>
+    <input type="text" id="node-input-server"  placeholder="server">
+  </div>
+  <div class="form-row">
+    <label for="node-input-subject"><i class="icon-tag"></i>subject</label>
+    <input type="text" id="node-input-subject" placeholder="subject">
+  </div>
+  <div class="form-row">
+    <label for="node-input-message"><i class="icon-tag"></i>message</label>
+    <input type="text" id="node-input-message" placeholder="message">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-pub">
+    <p>nats-pub node</p>
+</script>
