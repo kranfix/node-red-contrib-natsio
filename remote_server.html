@@ -4,8 +4,8 @@
     defaults: {
       host: {value:'localhost',required:true},
       port: {value:4222,required:true,validate:RED.validators.number()},
-      user:{value:''},
-      pass:{value:''}
+      user: {value:''},
+      pass: {value:''}
     },
     label: function() {
       return this.host + ':' +this.port;

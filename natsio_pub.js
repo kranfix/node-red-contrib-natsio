@@ -1,14 +1,20 @@
 module.exports = function(RED) {
 
-  function NatsPubNode(config) {
-    RED.nodes.createNode(this, config);
+  function NatsPubNode(n) {
+    RED.nodes.createNode(this, n);
 
-    this.server = RED.nodes.getNode(config.server);
-
+    this.server = RED.nodes.getNode(n.server);
+    if(this.server.nc) {
+      this.status({fill:"green",shape:"dot",text:"connected"});
+    } else {
+      this.status({fill:"red",shape:"ring",text:"disconnected"});
+    }
+    
     var node = this;
+
     node.on('input', function(msg) {
-      var subject = msg.replyTo || msg.topic || config.subject;
-      var message = msg.payload || config.message;
+      var subject = msg.replyTo || msg.topic || n.subject;
+      var message = msg.payload || n.message;
 
       if(subject && message){
         this.server.nc.publish(subject, message);
@@ -21,5 +27,5 @@ module.exports = function(RED) {
       }
     });
   }
-  RED.nodes.registerType("nats-pub",NatsPubNode);
+  RED.nodes.registerType("natsio-pub",NatsPubNode);
 }

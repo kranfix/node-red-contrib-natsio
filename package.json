@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-natsio",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Nats.io protocol with Node-RED",
   "author": "kranfix <frankmoreno1993@gmail.com>",
   "repository": {
@@ -22,7 +22,7 @@
       "natsio_sub": "natsio_sub.js",
       "natsio_pub": "natsio_pub.js",
       "natsio_req": "natsio_req.js",
-      "remote-server":"remote-server.js"
+      "remote_server":"remote_server.js"
     }
   },
   "license": "MIT",
@@ -30,7 +30,7 @@
     "url": "https://github.com/kranfix/node-red-contrib-natsio/issues"
   },
   "homepage": "https://github.com/kranfix/node-red-contrib-natsio#readme",
-  "main": "nats.js",
+  "main": "natsio_sub.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
