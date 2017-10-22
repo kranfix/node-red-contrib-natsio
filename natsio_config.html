@@ -1,0 +1,29 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-request',{
+    category: 'NatsIO',
+    color: '#3FADB5',
+    defaults: {
+      server: {value:"", type:"remote-server", required:true},
+      subject: {value:">"}
+    },
+    inputs:1,
+    outputs:1,
+    icon: "bridge.png",
+    label: "nats-request"
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-request">
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-tag"></i> server</label>
+    <input type="text" id="node-input-server"  placeholder="subject">
+  </div>
+  <div class="form-row">
+    <label for="node-input-subject"><i class="icon-tag"></i>subject</label>
+    <input type="text" id="node-input-subject" placeholder="subject">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-request">
+    <p>nats-request node</p>
+</script>
