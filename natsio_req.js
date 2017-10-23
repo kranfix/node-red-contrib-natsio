@@ -11,15 +11,15 @@ module.exports = function(RED) {
     } else {
       this.status({fill:"red",shape:"ring",text:"disconnected"});
     }
-    
+
     var node = this;
 
     node.on('input', function(msg) {
       var subject = msg.replyTo || msg.topic || config.subjec;
-      var message = msg.payload || n.message
-
+      var opt_msg = msg.payload || n.message || null
+      var opt_options = null // work in options
       if(subject){
-        node.server.nc.request(subject, function(response) {
+        node.server.nc.request(subject, opt_msg, opt_options, function(response) {
           msg.payload = response
           node.send(msg);
         })

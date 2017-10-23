@@ -14,14 +14,8 @@ module.exports = function(RED) {
 
     var node = this;
 
-
-
     var sid = node.server.nc.subscribe(this.subject,  function(message, replyTo, subject) {
-      var msg = {
-        payload: message,
-        topic: subject
-      };
-
+      var msg = {payload: message, topic: subject};
       if(replyTo){
         msg.replyTo = replyTo
       }
