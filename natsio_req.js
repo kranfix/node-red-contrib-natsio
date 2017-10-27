@@ -6,11 +6,17 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, n);
 
     this.server = RED.nodes.getNode(n.server);
-    if(this.server.nc) {
-      this.status({fill:"green",shape:"dot",text:"connected"});
-    } else {
-      this.status({fill:"red",shape:"ring",text:"disconnected"});
-    }
+    
+    this.server.nc.on('connect', () => {
+      this.status({fill:"green",shape:"dot",text:"connected"})
+    });
+    this.server.nc.on('reconnecting', () => {
+      this.status({fill:"green",shape:"ring",text:"reconnecting"})
+      setTimeout(() => this.status({fill:"green",shape:"dot",text:"connected"}), 1000)
+    });
+    this.server.nc.on('disconnect', () => {
+      this.status({fill:"red",shape:"ring",text:"disconnected"})
+    });
 
     var node = this;
 
@@ -20,6 +26,7 @@ module.exports = function(RED) {
       var opt_options = null // work in options
       if(subject){
         node.server.nc.request(subject, opt_msg, opt_options, function(response) {
+          node.status({fill:"green",shape:"dot",text:"connected"})
           msg.payload = response
           node.send(msg);
         })
