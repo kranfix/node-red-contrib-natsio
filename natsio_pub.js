@@ -5,15 +5,8 @@ module.exports = function(RED) {
 
     this.server = RED.nodes.getNode(n.server);
 
-    this.server.nc.on('connect', () => {
-      this.status({fill:"green",shape:"dot",text:"connected"})
-    });
-    this.server.nc.on('reconnecting', () => {
-      this.status({fill:"green",shape:"ring",text:"reconnecting"})
-      setTimeout(() => this.status({fill:"green",shape:"dot",text:"connected"}), 1000)
-    });
-    this.server.nc.on('disconnect', () => {
-      this.status({fill:"red",shape:"ring",text:"disconnected"})
+    this.server.st.on('status', (st) => {
+      this.status(st)
     });
 
     var node = this;

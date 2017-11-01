@@ -29,6 +29,6 @@ Functionality supported an ToDo
 - [x] Request/reply (without timeout)
 - [ ] Request/reply (with timeout)
 - [x] Configuration node
-- [ ] Node status
+- [x] Node status
 - [ ] Credentials
 - [ ] Improve documentation
