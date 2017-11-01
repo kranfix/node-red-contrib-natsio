@@ -4,7 +4,8 @@
     color: '#3FADB5',
     defaults: {
       server: {value:"", type:"remote-server", required:true},
-      subject: {value:">"}
+      subject: {value:">"},
+      maxWanted: {value:-1} // unsubscribe after maxWanted
     },
     inputs:0,
     outputs:1,
@@ -21,6 +22,12 @@
   <div class="form-row">
     <label for="node-input-subject"><i class="icon-tag"></i> subject</label>
     <input type="text" id="node-input-subject" placeholder="subject">
+  </div>
+  <div class="form-row">
+    <label for="node-input-maxWanted">
+      <i class="icon-tag"></i> Unsubscribe after
+    </label>
+    <input type="text" id="node-input-maxWanted" placeholder="infite by default">
   </div>
 </script>
 

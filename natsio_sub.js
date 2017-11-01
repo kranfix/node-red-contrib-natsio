@@ -1,31 +1,26 @@
 module.exports = function(RED) {
 
-  function NatsSubNode(config) {
-    RED.nodes.createNode(this, config);
+  function NatsSubNode(n) {
+    RED.nodes.createNode(this, n);
+    var node = this;
 
-    this.subject = config.subject;
-
-    this.server = RED.nodes.getNode(config.server);
-
-    this.server.st.on('status', (st) => {
+    node.server = RED.nodes.getNode(n.server);
+    node.server.st.on('status', (st) => { // (status,action)
+      if (st.text == 'connected') {
+        node.sid = node.server.nc.subscribe(n.subject,
+          {max: n.maxWanted},
+          (message, replyTo, subject) => {
+            node.send({payload: message, topic: subject, replyTo: replyTo});
+          }
+        );
+      }
       this.status(st)
     });
 
 
-    var node = this;
-
-    var sid = node.server.nc.subscribe(this.subject,  function(message, replyTo, subject) {
-      var msg = {payload: message, topic: subject};
-      if(replyTo){
-        msg.replyTo = replyTo
-      }
-      node.send(msg);
-    });
-
-    node.on('close', function() {
-      if (node.server.nc) {
-        node.server.nc.unsubscribe(subject,sid);
-        node.server.nc.close();
+    node.on('close', () => {
+      if (node.sid) {
+        node.server.nc.unsubscribe(node.sid);
       }
     });
   }

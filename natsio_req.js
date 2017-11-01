@@ -26,11 +26,7 @@ module.exports = function(RED) {
       }
     });
 
-    node.on('close', function() {
-      if (node.server.nc) {
-        node.server.nc.close();
-      }
-    });
+    //node.on('close', () => { });
   }
   RED.nodes.registerType("nats-request",NatsRequestNode);
 }

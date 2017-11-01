@@ -21,11 +21,12 @@ Run the following command in the root directory of your Node-RED install
 npm i node-red-contrib-natsio
 ```
 
-Functionality supported an ToDo
------------------------
+Functionality supported and ToDo
+-------------------------------
 
 - [x] Publish
 - [x] Subscription
+- [x] Unsubscription after N message
 - [x] Request/reply (without timeout)
 - [ ] Request/reply (with timeout)
 - [x] Configuration node
