@@ -26,9 +26,10 @@ Functionality supported and ToDo
 
 - [x] Publish
 - [x] Subscription
-- [x] Unsubscription after N message
-- [x] Request/reply (without timeout)
-- [ ] Request/reply (with timeout)
+- [x]   Unsubscription after N messages
+- [ ]   Queue
+- [x] Request/reply
+- [ ]   Timeout
 - [x] Configuration node
 - [x] Node status
 - [ ] Credentials
