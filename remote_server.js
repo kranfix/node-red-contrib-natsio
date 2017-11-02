@@ -1,6 +1,9 @@
 var nats = require('nats');
+//const {EventEmitter,emitter} = require('events');
 const EventEmitter = require('events');
+
 class MyEmitter extends EventEmitter {}
+//emitter.
 
 module.exports = function(RED) {
   function RemoteServerNode(n) {

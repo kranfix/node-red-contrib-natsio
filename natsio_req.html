@@ -5,7 +5,8 @@
     defaults: {
       server: {value:"", type:"remote-server", required:true},
       subject: {value:">"},
-      maxReplies: {value:-1}
+      maxReplies: {value:-1},
+      timeout: {value:""}
     },
     inputs:1,
     outputs:1,
@@ -25,7 +26,11 @@
   </div>
   <div class="form-row">
     <label for="node-input-maxReplies"><i class="icon-tag"></i>Max. Replies</label>
-    <input type="text" id="node-input-maxReplies" placeholder="infite by default">
+    <input type="text" id="node-input-maxReplies" placeholder="infinite by default">
+  </div>
+  <div class="form-row">
+    <label for="node-input-timeout"><i class="icon-tag"></i>Timeout</label>
+    <input type="text" id="node-input-timeout" placeholder="infinite by default">
   </div>
 </script>
 

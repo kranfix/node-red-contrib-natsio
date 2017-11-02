@@ -8,14 +8,10 @@ node-red-contrib-nats
 Install
 -------
 
-This is a fork of a initial work of `node-red-contrib-nats`, then you must uninstall it:
+This is a fork of a initial work of `node-red-contrib-nats`,
+but with independent development.
 
-```
-npm uninstall node-red-contrib-nats
-```
-
-
-Run the following command in the root directory of your Node-RED install
+Run the following command in the root directory of your Node-RED install:
 
 ```
 npm i node-red-contrib-natsio
@@ -24,16 +20,26 @@ npm i node-red-contrib-natsio
 Functionality supported and ToDo
 -------------------------------
 
+For gnatsd:
+
 - [x] Publish
+- [ ] |-use callback?
 - [x] Subscription
-- [x]   Unsubscription after N messages
-- [ ]   Queue
+- [x] |-Unsubscription after N messages
+- [ ] |-Queue
 - [x] Request/reply
-- [ ]   Timeout
-- [x]   max. replies
-- [ ]   chosen
+- [x] |-Timeout
+- [x] |-max. replies
+- [ ] |-chosen reply subject?
 - [x] Configuration node
-- [x]   Node status
-- [ ]   Credentials
-- [ ]   Don't crash when there's no broker connection at node-red starting
+- [x] |-Node status
+- [ ] |-Credentials: user and password
+- [ ] |-Credentials: token
+- [ ] |-Don't crash when there's no broker connection at node-red starting
+- [ ] |-security: TLS
+- [ ] |-Configurable reconnecting options
 - [ ] Improve documentation
+
+For nats-streaming-server:
+
+- This is a future work

@@ -4,27 +4,36 @@ module.exports = function(RED) {
 
   function NatsRequestNode(n) {
     RED.nodes.createNode(this, n);
+    var node = this;
 
-    this.server = RED.nodes.getNode(n.server);
-
-    this.server.st.on('status', (st) => {
+    node.server = RED.nodes.getNode(n.server);
+    node.server.st.on('status', (st) => {
       this.status(st)
     });
 
-    var node = this;
+    if(n.maxReplies == -1){
+      n.maxReplies = null
+    }
 
     node.on('input', function(msg) {
       var subject = msg.replyTo || msg.topic || config.subjec;
-      var opt_msg = msg.payload || n.message || null
+      var opt_msg = msg.payload || n.message
       var opt_options = {
-        max: msg.maxReplies || (n.maxReplies == -1? null:n.maxReplies)
+        max: msg.maxReplies || n.maxReplies
       }
-      if(subject){
-        node.server.nc.request(subject, opt_msg, opt_options, function(response) {
-          node.status({fill:"green",shape:"dot",text:"connected"})
+      if(subject && !node.server.nc.closed){
+        let sid = node.server.nc.request(subject, opt_msg, opt_options, function(response) {
           msg.payload = response
           node.send(msg);
         })
+        if(n.timeout){
+          let expected = n.maxReplies || 1
+          node.server.nc.timeout(sid, n.timeout, expected, () => {
+            node.log("Emitiendo timeout")
+            msg.timeout = "Timeout error afer "+n.timeout+'ms'
+            node.send(msg);
+          })
+        }
       }
     });
 
