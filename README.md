@@ -30,7 +30,10 @@ Functionality supported and ToDo
 - [ ]   Queue
 - [x] Request/reply
 - [ ]   Timeout
+- [x]   max. replies
+- [ ]   chosen
 - [x] Configuration node
-- [x] Node status
-- [ ] Credentials
+- [x]   Node status
+- [ ]   Credentials
+- [ ]   Don't crash when there's no broker connection at node-red starting
 - [ ] Improve documentation

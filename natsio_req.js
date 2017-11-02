@@ -16,7 +16,9 @@ module.exports = function(RED) {
     node.on('input', function(msg) {
       var subject = msg.replyTo || msg.topic || config.subjec;
       var opt_msg = msg.payload || n.message || null
-      var opt_options = null // work in options
+      var opt_options = {
+        max: msg.maxReplies || (n.maxReplies == -1? null:n.maxReplies)
+      }
       if(subject){
         node.server.nc.request(subject, opt_msg, opt_options, function(response) {
           node.status({fill:"green",shape:"dot",text:"connected"})
