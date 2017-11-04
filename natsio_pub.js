@@ -2,14 +2,13 @@ module.exports = function(RED) {
 
   function NatsPubNode(n) {
     RED.nodes.createNode(this, n);
-
-    this.server = RED.nodes.getNode(n.server);
-
-    this.server.st.on('status', (st) => {
-      this.status(st)
-    });
-
     var node = this;
+
+    node.server = RED.nodes.getNode(n.server);
+    node.server.setMaxListeners(node.server.getMaxListeners() + 1)
+    node.server.on('Status', (st) => {
+      node.status(st)
+    });
 
     node.on('input', function(msg) {
       var subject = msg.replyTo || msg.topic || n.subject;

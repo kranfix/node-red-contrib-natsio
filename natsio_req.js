@@ -7,7 +7,8 @@ module.exports = function(RED) {
     var node = this;
 
     node.server = RED.nodes.getNode(n.server);
-    node.server.st.on('status', (st) => {
+    node.server.setMaxListeners(node.server.getMaxListeners() + 1)
+    node.server.on('Status', (st) => {
       this.status(st)
     });
 

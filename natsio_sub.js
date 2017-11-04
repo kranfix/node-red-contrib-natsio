@@ -5,7 +5,8 @@ module.exports = function(RED) {
     var node = this;
 
     node.server = RED.nodes.getNode(n.server);
-    node.server.st.on('status', (st) => { // (status,action)
+    node.server.setMaxListeners(node.server.getMaxListeners() + 1)
+    node.server.on('Status', (st) => { // (status,action)
       if (st.text == 'connected') {
         node.sid = node.server.nc.subscribe(n.subject,
           {max: n.maxWanted},

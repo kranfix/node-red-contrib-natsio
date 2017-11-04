@@ -1,16 +1,9 @@
 var nats = require('nats');
-//const {EventEmitter,emitter} = require('events');
-const EventEmitter = require('events');
-
-class MyEmitter extends EventEmitter {}
-//emitter.
 
 module.exports = function(RED) {
   function RemoteServerNode(n) {
     RED.nodes.createNode(this,n);
     var node = this;
-
-    node.st = new MyEmitter();
 
     let server = 'nats://'
     if(n.user){
@@ -27,16 +20,17 @@ module.exports = function(RED) {
       });
 
       node.nc.on('connect', () => {
-        node.st.emit('status',{fill:"green",shape:"dot",text:"connected"});
+        //node.st.emit('Status',{fill:"green",shape:"dot",text:"connected"});
+        node.emit('Status',{fill:"green",shape:"dot",text:"connected"});
       });
       node.nc.on('reconnecting', () => {
-        node.st.emit('status', {fill:"green",shape:"ring",text:"connecting"});
+        node.emit('Status', {fill:"green",shape:"ring",text:"connecting"});
       });
       node.nc.on('reconnected', () => {
-        node.st.emit('status', {fill:"green",shape:"dot",text:"reconnected"});
+        node.emit('Status', {fill:"green",shape:"dot",text:"reconnected"});
       });
       node.nc.on('disconnect', () => {
-        node.st.emit('status', {fill:"red",shape:"ring",text:"disconnected"})
+        node.emit('Status', {fill:"red",shape:"ring",text:"disconnected"})
       });
     } catch (e){
       node.st.emit('status', {fill:"red",shape:"ring",text:"Broker not found"})
