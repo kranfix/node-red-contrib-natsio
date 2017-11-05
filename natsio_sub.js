@@ -23,6 +23,7 @@ module.exports = function(RED) {
       if (node.sid) {
         node.server.nc.unsubscribe(node.sid);
       }
+      node.server.setMaxListeners(node.server.getMaxListeners() - 1)
     });
   }
   RED.nodes.registerType("natsio-sub",NatsSubNode);

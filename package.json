@@ -1,10 +1,10 @@
 {
   "name": "node-red-contrib-natsio",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Nats.io protocol with Node-RED",
   "author": "kranfix <frankmoreno1993@gmail.com>",
   "repository": {
-      "type": "git",
+    "type": "git",
     "url": "git+ssh://github.com/kranfix/node-red-contrib-natsio.git"
   },
   "dependencies": {

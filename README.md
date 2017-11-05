@@ -35,7 +35,7 @@ For gnatsd:
 - [x] |-Node status
 - [ ] |-Credentials: user and password
 - [ ] |-Credentials: token
-- [ ] |-Don't crash when there's no broker connection at node-red starting
+- [x] |-Don't crash on broker connection error (including node-red starting)
 - [ ] |-security: TLS
 - [ ] |-Configurable reconnecting options
 - [ ] Improve documentation

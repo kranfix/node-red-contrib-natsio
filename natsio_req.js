@@ -38,7 +38,9 @@ module.exports = function(RED) {
       }
     });
 
-    //node.on('close', () => { });
+    node.on('close', () => {
+      node.server.setMaxListeners(node.server.getMaxListeners() - 1)
+    })
   }
   RED.nodes.registerType("nats-request",NatsRequestNode);
 }

@@ -4,7 +4,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, n);
     var node = this;
 
-    node.server = RED.nodes.getNode(n.server);
+    node.server = RED.nodes.getNode(n.server)
     node.server.setMaxListeners(node.server.getMaxListeners() + 1)
     node.server.on('Status', (st) => {
       node.status(st)
@@ -19,7 +19,9 @@ module.exports = function(RED) {
       }
     });
 
-    //node.on('close', () => { });
+    node.on('close', () => {
+      node.server.setMaxListeners(node.server.getMaxListeners() - 1)
+    });
   }
   RED.nodes.registerType("natsio-pub",NatsPubNode);
 }
