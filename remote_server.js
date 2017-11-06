@@ -17,7 +17,8 @@ module.exports = function(RED) {
       'reconnectTimeWait': 250
     });
 
-    node.nc.on('error', () => {
+    node.nc.on('error', (e) => {
+      node.log(e)
       node.emit('Status', {fill:"red",shape:"dot",text:"Broker not found"})
     })
     node.nc.on('connect', () => {
@@ -33,9 +34,8 @@ module.exports = function(RED) {
       node.emit('Status', {fill:"red",shape:"ring",text:"disconnected"})
     })
 
-
     node.on('close', function() {
-      if (node.nc) {
+      if (node.nc || node.nc.closed) {
         node.nc.close();
       }
     });

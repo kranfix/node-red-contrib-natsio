@@ -5,7 +5,8 @@
     defaults: {
       server: {value:"", type:"remote-server", required:true},
       subject: {value:">"},
-      maxWanted: {value:-1} // unsubscribe after maxWanted
+      maxWanted: {value:""}, // unsubscribe after maxWanted
+      queue:{value:""}
     },
     inputs:0,
     outputs:1,
@@ -28,6 +29,12 @@
       <i class="icon-tag"></i> Unsubscribe after
     </label>
     <input type="text" id="node-input-maxWanted" placeholder="infinite by default">
+  </div>
+  <div class="form-row">
+    <label for="node-input-queue">
+      <i class="icon-tag"></i> Queue
+    </label>
+    <input type="text" id="node-input-queue" placeholder="disable by default">
   </div>
 </script>
 

@@ -9,7 +9,7 @@ module.exports = function(RED) {
     node.server.on('Status', (st) => { // (status,action)
       if (st.text == 'connected') {
         node.sid = node.server.nc.subscribe(n.subject,
-          {max: n.maxWanted},
+          {max: n.maxWanted,queue:n.queue},
           (message, replyTo, subject) => {
             node.send({payload: message, topic: subject, replyTo: replyTo});
           }

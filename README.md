@@ -26,7 +26,7 @@ For gnatsd:
 - [ ] |-use callback?
 - [x] Subscription
 - [x] |-Unsubscription after N messages
-- [ ] |-Queue
+- [x] |-Queue
 - [x] Request/reply
 - [x] |-Timeout
 - [x] |-max. replies
