@@ -1,0 +1,33 @@
+<script type="text/javascript">
+  RED.nodes.registerType('natsio-server',{
+    category: 'config',
+    defaults: {
+      host: {value:'localhost',required:true},
+      port: {value:4222,required:true,validate:RED.validators.number()},
+      user: {value:''},
+      pass: {value:''}
+    },
+    label: function() {
+      return this.host + ':' +this.port;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="natsio-server">
+  <div class="form-row">
+    <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+    <input type="text" id="node-config-input-host">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+    <input type="text" id="node-config-input-port">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-user"><i class="icon-tag"></i> user</label>
+    <input type="text" id="node-config-input-user">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-pass"><i class="icon-tag"></i> pass</label>
+    <input type="password" id="node-config-input-pass">
+  </div>
+</script>
