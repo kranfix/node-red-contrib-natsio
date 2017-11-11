@@ -22,7 +22,7 @@
       "natsio_sub": "natsio_sub.js",
       "natsio_pub": "natsio_pub.js",
       "natsio_req": "natsio_req.js",
-      "remote_server":"remote_server.js"
+      "natsio_server":"natsio_server.js"
     }
   },
   "license": "MIT",
