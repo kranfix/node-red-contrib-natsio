@@ -2,6 +2,7 @@
   RED.nodes.registerType('natsio-server',{
     category: 'config',
     defaults: {
+      name: {value:''},
       host: {value:'localhost',required:true},
       port: {value:4222,required:true,validate:RED.validators.number()},
       user: {value:''},
@@ -9,25 +10,68 @@
     },
     label: function() {
       return this.host + ':' +this.port;
+    },
+    oneditprepare: function(){
+      var tabs = RED.tabs.create({
+        id: "natsio-server-tabs",
+        onchange: function(tab) {
+          $("#natsio-server-tabs-content").children().hide();
+          $("#" + tab.id).show();
+        }
+      });
+      tabs.addTab({
+        id: "natsio-server-tab-connection",
+        label: "Connection"
+      });
+      tabs.addTab({
+        id: "natsio-server-tab-security",
+        label: "Security"
+      });
+      setTimeout(function() { tabs.resize(); },0);
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="natsio-server">
   <div class="form-row">
-    <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
-    <input type="text" id="node-config-input-host">
+    <label for="node-config-input-name">
+      <i class="fa fa-tag"></i> <span>Name</span>
+    </label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
   </div>
   <div class="form-row">
-    <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
-    <input type="text" id="node-config-input-port">
+    <ul id="natsio-server-tabs"
+      style="background: #fff; min-width: 600px; margin-bottom: 20px;">
+    </ul>
   </div>
-  <div class="form-row">
-    <label for="node-config-input-user"><i class="icon-tag"></i> user</label>
-    <input type="text" id="node-config-input-user">
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-pass"><i class="icon-tag"></i> pass</label>
-    <input type="password" id="node-config-input-pass">
+  <div id="natsio-server-tabs-content" style="min-height: 170px;">
+    <div id="natsio-server-tab-connection" style="display:none">
+      <div class="form-row">
+        <label for="node-config-input-host">
+          <i class="icon-bookmark"></i> Host
+        </label>
+        <input type="text" id="node-config-input-host">
+      </div>
+      <div class="form-row">
+        <label for="node-config-input-port">
+          <i class="icon-bookmark"></i> Port
+        </label>
+        <input type="text" id="node-config-input-port">
+      </div>
+    </div>
+    <div id="natsio-server-tab-security" style="display:none">
+      <div class="form-row">
+        <label for="node-config-input-user">
+          <i class="icon-tag"></i> user
+        </label>
+        <input type="text" id="node-config-input-user">
+      </div>
+      <div class="form-row">
+        <label for="node-config-input-pass">
+          <i class="icon-tag"></i> pass
+        </label>
+        <input type="password" id="node-config-input-pass">
+      </div>
+    </div>
   </div>
 </script>
