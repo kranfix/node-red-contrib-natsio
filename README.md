@@ -33,6 +33,7 @@ For gnatsd:
 - [ ] |-chosen reply subject?
 - [x] Configuration node
 - [x] |-Node status
+- [x] |-Tabs
 - [ ] |-Credentials: user and password
 - [ ] |-Credentials: token
 - [x] |-Don't crash on broker connection error (including node-red starting)
