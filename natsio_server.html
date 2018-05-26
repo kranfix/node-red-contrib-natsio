@@ -5,11 +5,13 @@
       name: {value:''},
       host: {value:'localhost',required:true},
       port: {value:4222,required:true,validate:RED.validators.number()},
-      user: {value:''},
-      pass: {value:''}
     },
-    label: function() {
-      return this.host + ':' +this.port;
+    credentials: {
+      username: {type: "text"},
+      password: {type: "password"}
+    },
+    label: function(){
+      return this.name || `${this.host}:${this.port}`;
     },
     oneditprepare: function(){
       var tabs = RED.tabs.create({
@@ -27,8 +29,8 @@
         id: "natsio-server-tab-security",
         label: "Security"
       });
-      setTimeout(function() { tabs.resize(); },0);
-    }
+      setTimeout(() => { tabs.resize(); },0);
+    },
   });
 </script>
 
@@ -61,16 +63,16 @@
     </div>
     <div id="natsio-server-tab-security" style="display:none">
       <div class="form-row">
-        <label for="node-config-input-user">
+        <label for="node-config-input-username">
           <i class="icon-tag"></i> user
         </label>
-        <input type="text" id="node-config-input-user">
+        <input type="text" id="node-config-input-username">
       </div>
       <div class="form-row">
-        <label for="node-config-input-pass">
+        <label for="node-config-input-password">
           <i class="icon-tag"></i> pass
         </label>
-        <input type="password" id="node-config-input-pass">
+        <input type="password" id="node-config-input-password">
       </div>
     </div>
   </div>

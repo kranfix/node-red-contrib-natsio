@@ -23,7 +23,7 @@ Functionality supported and ToDo
 For gnatsd:
 
 - [x] Publish
-- [ ] |-use callback?
+- [ ] |-use callback or promise?
 - [x] Subscription
 - [x] |-Unsubscription after N messages
 - [x] |-Queue
@@ -34,7 +34,7 @@ For gnatsd:
 - [x] Configuration node
 - [x] |-Node status
 - [x] |-Tabs
-- [ ] |-Credentials: user and password
+- [x] |-Credentials: user and password
 - [ ] |-Credentials: token
 - [x] |-Don't crash on broker connection error (including node-red starting)
 - [ ] |-security: TLS

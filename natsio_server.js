@@ -4,12 +4,15 @@ module.exports = function(RED) {
   function RemoteServerNode(n) {
     RED.nodes.createNode(this,n);
     var node = this;
+    var user = node.credentials.username;
+    var pass = node.credentials.password;
 
     let server = 'nats://'
-    if(n.user){
-      server += n.user + (n.pass? ':'+ n.pass : '') + '@'
+    if(user){
+      server += user + (pass? ':'+ pass : '') + '@'
     }
-    server += n.host + ':' + n.port
+    server += `${n.host}:${n.port}`
+    console.log(server)
 
     node.nc = nats.connect({
       'servers': [server],
@@ -35,10 +38,16 @@ module.exports = function(RED) {
     })
 
     node.on('close', function() {
-      if (node.nc || node.nc.closed) {
+      if (node.nc || !node.nc.closed) {
         node.nc.close();
       }
     });
   }
-  RED.nodes.registerType('natsio-server',RemoteServerNode);
+
+  RED.nodes.registerType('natsio-server',RemoteServerNode,{
+    credentials: {
+      username: {type:"text"},
+      password: {type: "password"}
+    }
+  });
 }
