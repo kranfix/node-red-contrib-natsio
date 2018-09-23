@@ -5,7 +5,7 @@
       name: {value:''},
       host: {value:'localhost',required:true},
       port: {value:4222,required:true,validate:RED.validators.number()},
-      json: {value:true,type:'checkbox'}
+      json: {value:true}
     },
     credentials: {
       username: {type: "text"},
@@ -65,7 +65,7 @@
         <label for="node-config-input-json">
           <i class="icon-bookmark"></i> JSON mode
         </label>
-        <input type="text" id="node-config-input-json">
+        <input type="checkbox" id="node-config-input-json">
       </div>
     </div>
     <div id="natsio-server-tab-security" style="display:none">
