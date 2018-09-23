@@ -17,7 +17,8 @@ module.exports = function(RED) {
     node.nc = nats.connect({
       'servers': [server],
       'maxReconnectAttempts': -1,
-      'reconnectTimeWait': 250
+      'reconnectTimeWait': 250,
+      'json': n.json
     });
 
     node.nc.on('error', (e) => {
