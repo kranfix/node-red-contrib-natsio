@@ -17,7 +17,7 @@ module.exports = function(RED) {
     }
 
     node.on('input', function(msg) {
-      var subject = msg.replyTo || msg.topic || config.subjec;
+      var subject = msg.replyTo || msg.topic || n.subject;
       var opt_msg = msg.payload || n.message
       var opt_options = {
         max: msg.maxReplies || n.maxReplies
