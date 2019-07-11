@@ -8,7 +8,7 @@
     "url": "git+ssh://github.com/kranfix/node-red-contrib-natsio.git"
   },
   "dependencies": {
-    "nats": "^0.7.24"
+    "nats": "^1.3.0"
   },
   "keywords": [
     "node-red",
@@ -22,7 +22,7 @@
       "natsio_sub": "natsio_sub.js",
       "natsio_pub": "natsio_pub.js",
       "natsio_req": "natsio_req.js",
-      "natsio_server":"natsio_server.js"
+      "natsio_server": "natsio_server.js"
     }
   },
   "license": "MIT",
