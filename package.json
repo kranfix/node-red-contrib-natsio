@@ -14,6 +14,7 @@
     "node-red",
     "iot",
     "nats",
+    "natsio",
     "nats.io",
     "pub/sub"
   ],
