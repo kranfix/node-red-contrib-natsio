@@ -13,9 +13,12 @@ module.exports = function(RED) {
     node.on('input', function(msg) {
       var subject = msg.replyTo || msg.topic || n.subject;
       var message = msg.payload || n.message;
-
-      if(subject && message && !node.server.nc.closed){
-        this.server.nc.publish(subject, message);
+      if(node.server.nc === undefined) {
+        node.server.emit('try', {});
+      } else {
+        if(subject && message && !node.server.nc.closed){
+          this.server.nc.publish(subject, message);
+        }
       }
     });
 
