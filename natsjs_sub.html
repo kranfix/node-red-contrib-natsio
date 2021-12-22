@@ -1,28 +1,32 @@
 <script type="text/javascript">
-  RED.nodes.registerType('natsio-sub',{
+  RED.nodes.registerType('natsjs-sub',{
     category: 'NATS',
     color: '#3FADB5',
     defaults: {
       server: {value:"", type:"natsio-server", required:true},
-      subject: {value:">"},
+      stream: {value:"FLOWS"},
+      subjects: {value: "*"},
       maxWanted: {value:""}, // unsubscribe after maxWanted
-      queue:{value:""}
     },
     inputs:0,
     outputs:1,
-    icon: "bridge.svg",
-    label: "nats-sub"
+    icon: "fa-space-shuttle.svg",
+    label: "natsjs-sub"
   });
 </script>
 
-<script type="text/x-red" data-template-name="natsio-sub">
+<script type="text/x-red" data-template-name="natsjs-sub">
   <div class="form-row">
     <label for="node-input-server"><i class="icon-tag"></i> server</label>
     <input type="text" id="node-input-server" placeholder="server">
   </div>
   <div class="form-row">
-    <label for="node-input-subject"><i class="icon-tag"></i> subject</label>
-    <input type="text" id="node-input-subject" placeholder="subject">
+    <label for="node-input-stream"><i class="icon-tag"></i> stream</label>
+    <input type="text" id="node-input-stream" placeholder="stream">
+  </div>
+  <div class="form-row">
+    <label for="node-input-subjects"><i class="icon-tag"></i> subjects</label>
+    <textarea id="node-input-subjects" placeholder="subjects" rows="5"></textarea>
   </div>
   <div class="form-row">
     <label for="node-input-maxWanted">
@@ -30,14 +34,9 @@
     </label>
     <input type="text" id="node-input-maxWanted" placeholder="infinite by default">
   </div>
-  <div class="form-row">
-    <label for="node-input-queue">
-      <i class="icon-tag"></i> Queue
-    </label>
-    <input type="text" id="node-input-queue" placeholder="disable by default">
-  </div>
+
 </script>
 
-<script type="text/x-red" data-help-name="natsio-sub">
-  <p>nats.io-sub node</p>
+<script type="text/x-red" data-help-name="natsjs-sub">
+  <p>jetstream-sub node</p>
 </script>

@@ -8,13 +8,14 @@ node-red-contrib-nats
 Install
 -------
 
-This is a fork of a initial work of `node-red-contrib-nats`,
+This is a fork of a initial work of `node-red-contrib-nats` and `node-red-contrib-natsio`
+,
 but with independent development.
 
 Run the following command in the root directory of your Node-RED install:
 
 ```
-npm i node-red-contrib-natsio
+npm i node-red-contrib-natsjs
 ```
 
 Functionality supported and ToDo
@@ -40,7 +41,6 @@ For gnatsd:
 - [ ] |-security: TLS
 - [ ] |-Configurable reconnecting options
 - [ ] Improve documentation
+- [ ] JetStream
 
-For nats-streaming-server:
 
-- This is a future work

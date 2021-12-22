@@ -6,6 +6,8 @@ module.exports = function(RED) {
 
     node.server = RED.nodes.getNode(n.server);
     node.server.setMaxListeners(node.server.getMaxListeners() + 1)
+
+    /*
     node.server.on('Status', (st) => { // (status,action)
       if (st.text == 'connected') {
         node.sid = node.server.nc.subscribe(n.subject,
@@ -25,6 +27,7 @@ module.exports = function(RED) {
       }
       node.server.setMaxListeners(node.server.getMaxListeners() - 1)
     });
+    */
   }
   RED.nodes.registerType("natsio-sub",NatsSubNode);
 }
