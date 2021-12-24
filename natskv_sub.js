@@ -12,9 +12,8 @@ module.exports = function (RED) {
           name: n.name,
           deliver_policy: n.deliverPolicy,
           ack_policy: n.ackPolicy,
-          deliver_Policy: n.deliverPolicy,
+        //  ack_wait: nanos(30 * 1000),
           replay_policy: n.replayPolicy,
-          //  ack_wait: nanos(30 * 1000),
         }
         if (n.durable) {
           opts.durable = n.durable;
@@ -30,18 +29,15 @@ module.exports = function (RED) {
             node.send({ payload: m, topic: m.subject });
 
           }
-        })
-        done().then(() => {
           debugger
-          node.sub.destroy();
-          node.sub = null;
+          n.sub.destroy();
+          n.sub = null
         })
       }
       this.status(st)
     });
 
     node.on('close', () => {
-      debugger
       if (node.sub) {
         node.sub.destroy();
       }

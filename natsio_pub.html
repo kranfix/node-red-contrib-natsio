@@ -1,16 +1,19 @@
 <script type="text/javascript">
-  RED.nodes.registerType('natsio-pub',{
+  RED.nodes.registerType('natsio-pub', {
     category: 'NATS',
     color: '#3FADB5',
     defaults: {
-      server: {value:"", type:"natsio-server", required:true},
-      subject: {value:""},
-      message: {value:""}
+      name: { value:""},
+      server: { value: "", type: "natsio-server", required: true },
+      subject: { value: "" },
+      message: { value: "" }
     },
-    inputs:1,
-    outputs:0,
+    inputs: 1,
+    outputs: 0,
     icon: "bridge.svg",
-    label: "nats-pub"
+    label: function () {
+      return this.name || "nats-pub";
+    }
   });
 </script>
 

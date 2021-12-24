@@ -1,17 +1,21 @@
 <script type="text/javascript">
-  RED.nodes.registerType('natsio-sub',{
+  RED.nodes.registerType('natsio-sub', {
     category: 'NATS',
     color: '#3FADB5',
     defaults: {
-      server: {value:"", type:"natsio-server", required:true},
-      subject: {value:">"},
-      maxWanted: {value:""}, // unsubscribe after maxWanted
-      queue:{value:""}
+      name: { value:""},
+      server: { value: "", type: "natsio-server", required: true },
+      subject: { value: ">" },
+      maxWanted: { value: "" }, // unsubscribe after maxWanted
+      queue: { value: "" },
+      json: { value: true }
     },
-    inputs:0,
-    outputs:1,
+    inputs: 0,
+    outputs: 1,
     icon: "bridge.svg",
-    label: "nats-sub"
+    label: function () {
+      return this.name || "nats-sub";
+    }
   });
 </script>
 
@@ -36,6 +40,19 @@
     </label>
     <input type="text" id="node-input-queue" placeholder="disable by default">
   </div>
+
+  <div class="form-row">
+    <label for="node-input-json">
+      <i class="icon-bookmark"></i> JSON mode
+    </label>
+    <input type="checkbox" id="node-input-json">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+  </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="natsio-sub">

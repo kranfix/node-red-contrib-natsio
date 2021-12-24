@@ -1,23 +1,23 @@
 <script type="text/javascript">
-  RED.nodes.registerType('natsio-server',{
+  RED.nodes.registerType('natsio-server', {
     category: 'config',
     defaults: {
-      name: {value:''},
-      host: {value:'localhost',required:true},
-      port: {value:4222,required:true,validate:RED.validators.number()},
-      json: {value:true}
+      name: { value: '' },
+      host: { value: 'localhost', required: true },
+      port: { value: 4222, required: true, validate: RED.validators.number() },
+      json: { value: true }
     },
     credentials: {
-      username: {type: "text"},
-      password: {type: "password"}
+      username: { type: "text" },
+      password: { type: "password" }
     },
-    label: function(){
+    label: function () {
       return this.name || `${this.host}:${this.port}`;
     },
-    oneditprepare: function(){
+    oneditprepare: function () {
       var tabs = RED.tabs.create({
         id: "natsio-server-tabs",
-        onchange: function(tab) {
+        onchange: function (tab) {
           $("#natsio-server-tabs-content").children().hide();
           $("#" + tab.id).show();
         }
@@ -30,7 +30,7 @@
         id: "natsio-server-tab-security",
         label: "Security"
       });
-      setTimeout(() => { tabs.resize(); },0);
+      setTimeout(() => { tabs.resize(); }, 0);
     },
   });
 </script>
@@ -60,12 +60,6 @@
           <i class="icon-bookmark"></i> Port
         </label>
         <input type="text" id="node-config-input-port">
-      </div>
-      <div class="form-row">
-        <label for="node-config-input-json">
-          <i class="icon-bookmark"></i> JSON mode
-        </label>
-        <input type="checkbox" id="node-config-input-json">
       </div>
     </div>
     <div id="natsio-server-tab-security" style="display:none">

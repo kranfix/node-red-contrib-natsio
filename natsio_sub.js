@@ -1,4 +1,4 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
 
   function NatsSubNode(n) {
     RED.nodes.createNode(this, n);
@@ -7,15 +7,33 @@ module.exports = function(RED) {
     node.server = RED.nodes.getNode(n.server);
     node.server.setMaxListeners(node.server.getMaxListeners() + 1)
 
-    /*
     node.server.on('Status', (st) => { // (status,action)
       if (st.text == 'connected') {
-        node.sid = node.server.nc.subscribe(n.subject,
-          {max: n.maxWanted,queue:n.queue},
-          (message, replyTo, subject) => {
-            node.send({payload: message, topic: subject, replyTo: replyTo});
+        var opts = {}
+        if (n.maxWanted > 0) {
+          opts.max = n.maxWanted
+        }
+        if (n.queue != "") {
+          opts.queue = n.queue
+        }
+        node.sid = node.server.nc.subscribe(n.subject, opts);
+        (async () => {
+          for await (const m of node.sid) {
+            var data = new TextDecoder().decode(m.data)
+            if (n.json) {
+              try {
+                const json = JSON.parse(data)
+                data = json
+              } catch (e) {
+                data = {
+                  error: e
+                }
+              }
+            }
+            node.send({ payload: data, topic: m.subject, replyTo: m.reply });
           }
-        );
+          await n.server.nc.closed
+        })();
       }
       this.status(st)
     });
@@ -27,7 +45,7 @@ module.exports = function(RED) {
       }
       node.server.setMaxListeners(node.server.getMaxListeners() - 1)
     });
-    */
+
   }
-  RED.nodes.registerType("natsio-sub",NatsSubNode);
+  RED.nodes.registerType("natsio-sub", NatsSubNode);
 }

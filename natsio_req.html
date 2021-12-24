@@ -1,17 +1,21 @@
 <script type="text/javascript">
-  RED.nodes.registerType('nats-request',{
+  RED.nodes.registerType('nats-request', {
     category: 'NATS',
     color: '#3FADB5',
     defaults: {
-      server: {value:"", type:"natsio-server", required:true},
-      subject: {value:">"},
-      maxReplies: {value:-1},
-      timeout: {value:""}
+      name: { value:""},
+      server: { value: "", type: "natsio-server", required: true },
+      subject: { value: ">" },
+      maxReplies: { value: -1 },
+      timeout: { value: "" }
     },
-    inputs:1,
-    outputs:1,
+    inputs: 1,
+    outputs: 1,
     icon: "bridge.svg",
-    label: "nats-request"
+    label: function () {
+      return this.name || "nats-request";
+    }
+
   });
 </script>
 
@@ -31,6 +35,10 @@
   <div class="form-row">
     <label for="node-input-timeout"><i class="icon-tag"></i>Timeout</label>
     <input type="text" id="node-input-timeout" placeholder="infinite by default">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
   </div>
 </script>
 
