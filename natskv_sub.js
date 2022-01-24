@@ -1,6 +1,6 @@
 module.exports = function (RED) {
 
-  function NatsJsSubNode(n) {
+  function NatsKVSubNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
     node.server = RED.nodes.getNode(n.server);
@@ -8,33 +8,56 @@ module.exports = function (RED) {
     node.server.on('Status', (st) => { // (status,action)
       node.log("nats-server status: " + st.text)
       if (st.text == 'connected') {
-        const opts = {
-          name: n.name,
-          deliver_policy: n.deliverPolicy,
-          ack_policy: n.ackPolicy,
-        //  ack_wait: nanos(30 * 1000),
-          replay_policy: n.replayPolicy,
-        }
-        if (n.durable) {
-          opts.durable = n.durable;
-        }
-        if (n.maxWanted) {
-          opts.max = n.maxWanted
-        }
-
-        n.sub = node.server.nc.jetstream().subscribe(n.subject, opts);
-        const done = (async () => {
-          for await (const m of sub) {
-            debugger
-            node.send({ payload: m, topic: m.subject });
-
+        function sendValue(entry) {
+          if (entry) {
+            result = null
+            if (entry.operation == "PUT") {
+              var data = new TextDecoder().decode(entry.value)
+              if (n.json) {
+                try {
+                  const json = JSON.parse(data);
+                  data = json;
+                } catch (e) {
+                  data = {
+                    error: e
+                  };
+                }
+              }
+              result = { payload: data, topic: n.view + "." + entry.key }
+            } else {
+              result = { payload: null, topic: n.view + "." + entry.key }
+            }
+            node.send(result);
           }
-          debugger
-          n.sub.destroy();
-          n.sub = null
-        })
+        }
+        const js = node.server.nc.jetstream()
+        js.views.kv(n.view, { history: 1 }).then((kv) => {
+          (async () => {
+            if (n.fetchState) {
+              const keys = await kv.keys();
+              for await (const key of keys) {
+                sendValue(await kv.get(key))
+              }
+            }
+            const watch = ! await kv.watch();
+            if (watch) {
+              for await (const e of watch) {
+                sendValue(e)
+              }
+            } else {
+              node.log("nats-watch watch returned empty watcher");  
+            }
+
+          })().catch((reason) => {
+            node.log("nats-watch error: " + reason);
+          });
+        }).catch((reason) => {
+          node.log("nats-watch error: " + reason);
+        });
+      } else {
+        console.warn(st.text);
       }
-      this.status(st)
+      this.status(st);
     });
 
     node.on('close', () => {
@@ -45,5 +68,5 @@ module.exports = function (RED) {
       node.server.setMaxListeners(node.server.getMaxListeners() - 1)
     });
   }
-  RED.nodes.registerType("natsjs-sub", NatsJsSubNode);
+  RED.nodes.registerType("natskv-sub", NatsKVSubNode);
 }

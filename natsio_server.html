@@ -5,7 +5,8 @@
       name: { value: '' },
       host: { value: 'localhost', required: true },
       port: { value: 4222, required: true, validate: RED.validators.number() },
-      json: { value: true }
+      debug: { value: false },
+      json: { value: false }
     },
     credentials: {
       username: { type: "text" },
@@ -61,6 +62,22 @@
         </label>
         <input type="text" id="node-config-input-port">
       </div>
+
+      <div class="form-row">
+        <label for="node-config-input-debug">
+          <i class="icon-debug"></i> Debug
+        </label>
+        <input type="checkbox" id="node-config-input-debug">
+      </div>
+
+      <div class="form-row">
+        <label for="node-config-input-json">
+          <i class="icon-bookmark"></i> JSON
+        </label>
+        <input type="checkbox" id="node-config-input-json">
+      </div>
+
+
     </div>
     <div id="natsio-server-tab-security" style="display:none">
       <div class="form-row">
@@ -76,5 +93,9 @@
         <input type="password" id="node-config-input-password">
       </div>
     </div>
+
+
+ 
+
   </div>
 </script>

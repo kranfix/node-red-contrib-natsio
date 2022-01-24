@@ -7,8 +7,11 @@
     "type": "git",
     "url": "git+ssh://github.com/autonubil/node-red-contrib-natsjs.git"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
-    "nats": "^2.2.0"
+    "nats": "^2.5.0"
   },
   "keywords": [
     "node-red",
@@ -25,6 +28,7 @@
       "natsio_pub": "natsio_pub.js",
       "natsio_req": "natsio_req.js",
       "natsjs_sub": "natsjs_sub.js",
+      "natskv_sub": "natskv_sub.js",
       "natsio_server": "natsio_server.js"
     }
   },

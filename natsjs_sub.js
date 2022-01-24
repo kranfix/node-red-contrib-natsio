@@ -9,43 +9,113 @@ module.exports = function (RED) {
       node.log("nats-server status: " + st.text)
       if (st.text == 'connected') {
         const opts = {
-          name: n.name,
-          deliver_policy: n.deliverPolicy,
-          ack_policy: n.ackPolicy,
-          deliver_Policy: n.deliverPolicy,
-          replay_policy: n.replayPolicy,
+          stream: n.stream,
+          config: {
+            description: "node-red " + n.name,
+            deliver_policy: n.deliverPolicy,
+            deliver_subject: n.deliverySubject,
+            ack_policy: n.ackPolicy,
+            deliver_policy: n.deliverPolicy,
+            replay_policy: n.replayPolicy,
+          }
           //  ack_wait: nanos(30 * 1000),
         }
-        if (n.durable) {
-          opts.durable = n.durable;
-        }
+        //TODO: Implement all options
+
+
+        /**
+         OPTS
+        
+        
+            mack: boolean;
+            stream: string;
+            callbackFn?: JsMsgCallback;
+            name?: string;
+            ordered: boolean;
+            max?: number;
+            queue?: string;
+            debug?: boolean;
+            isBind?: boolean;
+          config: Partial<ConsumerConfig>;
+        
+         */
+
         if (n.maxWanted) {
           opts.max = n.maxWanted
         }
 
-        n.sub = node.server.nc.jetstream().subscribe(n.subject, opts);
-        const done = (async () => {
-          for await (const m of sub) {
-            debugger
-            node.send({ payload: m, topic: m.subject });
 
+        /**
+CONFIG:
+              description?: string;
+    "ack_policy": AckPolicy;
+    "ack_wait"?: Nanos;
+    "deliver_policy": DeliverPolicy;
+    "deliver_subject"?: string;
+    "deliver_group"?: string;
+    "durable_name"?: string;
+    "filter_subject"?: string;
+    "flow_control"?: boolean;
+    "idle_heartbeat"?: Nanos;
+    "max_ack_pending"?: number;
+    "max_deliver"?: number;
+    "max_waiting"?: number;
+    "opt_start_seq"?: number;
+    "opt_start_time"?: string;
+    "rate_limit_bps"?: number;
+    "replay_policy": ReplayPolicy;
+    "sample_freq"?: string;
+    "headers_only"?: boolean;
+}
+         */
+
+
+        if (n.durable) {
+          opts.config.durable = n.durable;
+        }
+        if (n.filterSubject) {
+          opts.config.filter_subject = n.filterSubject
+        }
+
+        opts.callbackFn = (err, msg) => {
+          if (err) {
+            node.log("jestream-error: " + err)
+            return
           }
-        })
-        done().then(() => {
-          debugger
-          node.sub.destroy();
-          node.sub = null;
-        })
+          if (msg) {
+            node.send({ payload: msg, topic: msg.subject });
+          }
+        }
+
+        const js = node.server.nc.jetstream()
+        try {
+          const sub = js.subscribe(n.filterSubject, opts);
+
+          n.sub = sub
+
+          const done = (async () => {
+      
+            sub.close().then(() => {
+              sub.destroy();
+              n.sub = null;
+            }).catch((e) => {
+              debugger
+            })
+
+
+          });
+        } catch (e) {
+          this.status({ fill: "red", shape: "dot", text: e });
+        }
       }
       this.status(st)
     });
 
     node.on('close', () => {
-      debugger
-      if (node.sub) {
-        node.sub.destroy();
+      if (n.sub) {
+        n.sub.destroy();
       }
-      node.sub = null
+      n.sub = null
       node.server.setMaxListeners(node.server.getMaxListeners() - 1)
     });
   }
