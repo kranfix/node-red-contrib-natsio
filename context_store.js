@@ -19,10 +19,9 @@ var ContextStore = function (config) {
         }
     };
 
-    const kv = !config.kv ? defaultOptions.kv  :  Object.assign(defaultOptions.kv , config.kv )
+    const kv = !config.kv ? defaultOptions.kv : Object.assign(defaultOptions.kv, config.kv)
     var options = Object.assign(defaultOptions, config)
-    options.kv=kv
-    console.log(nats);
+    options.kv = kv
     this.config = options;
     this.nc = null;
     this.kv = null;
@@ -33,23 +32,26 @@ var ContextStore = function (config) {
 
 
 function toNatsScope(k) {
-    if (!k || k=="global" ) {
-        return k;
+    if (!k || k == "global") {
+        return k + ".any";
     }
 
-    if (k.indexOf(":") == -1)  {
-        return "flow."  + k;
+    if (k.indexOf(":") == -1) {
+        return "flow." + k;
     }
 
-    return k.replace(':','.');
+    return k.replace(':', '.');
 }
+
 
 ContextStore.prototype.open = async function () {
     const self = this;
 
     const promise = new Promise((resolve, reject) => {
         async function connect() {
-            console.debug("nats-context: connect");
+            if (self.config.debug) {
+                console.debug("nats-context: connect");
+            }
             nats.connect({
                 'servers': self.config.servers,
                 'maxReconnectAttempts': -1,
@@ -76,7 +78,9 @@ ContextStore.prototype.open = async function () {
 
                 let statusEnum = self.nc.status();
                 (async function () {
-                    console.debug("nats-context-status: wait status changes");
+                    if (self.config.debug) {
+                        console.debug("nats-context-status: wait status changes");
+                    }
                     for await (let st of statusEnum) {
                         console.log("nats-context-status: " + st.type);
                         switch (st.type) {
@@ -97,7 +101,9 @@ ContextStore.prototype.open = async function () {
                         }
                     }
                 })();
-                console.debug("nats-context-status: wait for connection");
+                if (self.config.debug) {
+                    console.debug("nats-context-status: wait for connection");
+                }
             }).catch((reason) => {
                 if (reason != "TIMEOUT") {
                     console.log("nats-context-error", reason)
@@ -120,17 +126,20 @@ ContextStore.prototype.close = function () {
 }
 
 
-ContextStore.prototype.check = function (callback) {
+ContextStore.prototype.check = function (callback, requreCAllBAkc) {
+    if (requreCAllBAkc && !callback) {
+        throw "only fully aync operation with callbacks supported";
+    }
     if (this.nc == null) {
         if (callback) {
-            callback("nats-context not connected")
-            return false
+            callback("nats-context not connected");
+            return false;
         }
     }
     if (this.kv == null) {
         if (callback) {
-            callback("nats-context not configured")
-            return false
+            callback("nats-context not configured");
+            return false;
         }
     }
     return true;
@@ -138,83 +147,91 @@ ContextStore.prototype.check = function (callback) {
 
 
 ContextStore.prototype.get = function (scope, key, callback) {
-    console.info("GET", scope, key);
-    if (!this.check(callback)) {
+    if (!this.check(callback, true)) {
         return
     }
     const subject = toNatsScope(scope) + "." + key;
     this.kv.get(subject).then((v) => {
-        if (!v || v==null) {
-            if  (callback) {
+        if (!v || v == null) {
+            if (callback) {
                 callback(null, v);
             }
             return v
         }
-
         if (v.operation == "PURGE") {
-            console.debug("nats-context-Get", scope,key, subject, "PURGED");
             if (callback) {
                 callback(null, undefined);
             }
             return undefined
         }
-
         var val;
-        const decoded  = this.decoder.decode(v.value);
+        const decoded = this.decoder.decode(v.value);
         try {
             val = JSON.parse(decoded);
         } catch (e) {
-            console.warn("decode context value", e)
             val = decoded;
         }
-        console.debug("nats-context-Get", scope,key, subject, val,  decoded);
 
+        if (this.config.debug) {
+            console.debug("GET ", subject, val);
+        }
         if (callback) {
             callback(null, val);
         }
         return val;
     }).catch((e) => {
+        console.warn("nats-context: get", scope, key, e);
         if (callback) {
             callback(e);
         }
-        throw e;
+        return undefined;
     });
 }
 
-ContextStore.prototype.setArray = function (scope, keys, values, callback) {
+ContextStore.prototype.setArray = async function (scope, keys, values, callback) {
     if (!this.check(callback)) {
         return
     }
-    throw "NOT YET IMPLEMENTED";
 
-    for (var i=0; i < length(keys); i++) {
-        const key = keys[i];
-        const subject = toNatsScope(scope) + "." + key;
-        if (value == undefined) {
-            // delete...
-            this.kv.purge(subject).then(() => {
-                console.debug("nats-context-delete", scope,key);
-                if (callback) {
-                    callback();
+    try {
+        for (var i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            var value;
+            if (!Array.isArray(values)) {
+                value = values;
+            } else {
+                if (values.length == keys.length) {
+                    value = values[i];
+                } else if (values.length < 1) {
+                    value = undefined;
+                } else {
+                    value = values[0];
                 }
-                return
-            }).catch((e) => {
-                if (callback) {
-                    callback(e)
-                }
-            });
-            return
-        }
-        const encodedValue = this.encoder.encode(JSON.stringify(value));
-        this.kv.put(subject, encodedValue).then((n) => {
-            console.debug("nats-context-set", scope, key,subject);
-            return
-        }).catch((e) => {
-            if (callback) {
-                callback(e)
             }
-        });
-    }
+            const subject = toNatsScope(scope) + "." + key;
+            if (value == undefined) {
+                // delete...
+                this.kv.purge(subject).then(() => {
+                    console.debug("nats-context-delete", scope, key);
+                    if (callback) {
+                        callback();
+                    }
+                    return
+                }).catch((e) => {
+                    if (callback) {
+                        callback(e)
+                    }
+                });
+                return
+            }
+            const encodedValue = this.encoder.encode(JSON.stringify(value));
+            await this.kv.put(subject, encodedValue);
+        }
+    } catch (e) {
+        if (callback) {
+            callback(e)
+        }
+    };
 
     if (callback) {
         callback();
@@ -222,25 +239,24 @@ ContextStore.prototype.setArray = function (scope, keys, values, callback) {
 }
 
 ContextStore.prototype.set = function (scope, key, value, callback) {
-    console.info("SET", scope, key, value);
-    if (!this.check(callback)) {
+    if (!this.check(callback, true)) {
         return
     }
 
-    if (key instanceof Array) {
-        return this.setArray(scope, key,value, callback) ;
+    if (Array.isArray(key)) {
+        return this.setArray(scope, key, value, callback);
     }
-    
+
     const subject = toNatsScope(scope) + "." + key;
     if (value == undefined) {
         // delete...
         this.kv.purge(subject).then(() => {
-            console.debug("nats-context-delete", scope,key);
             if (callback) {
-                callback();c
+                callback();
             }
             return
         }).catch((e) => {
+            console.warn("nats-context: purge", scope, key, e);
             if (callback) {
                 callback(e)
             }
@@ -250,33 +266,35 @@ ContextStore.prototype.set = function (scope, key, value, callback) {
     const jsonVal = JSON.stringify(value);
     const encodedValue = this.encoder.encode(jsonVal);
     this.kv.put(subject, encodedValue).then((n) => {
-        console.debug("nats-context-Set", scope,key,subject), jsonVal;
+        if (this.config.debug) {
+            console.debug("SET ", subject, jsonVal);
+        }
+
         if (callback) {
             callback();
         }
         return
     }).catch((e) => {
+        console.warn("nats-context: set", scope, key, e);
         if (callback) {
             callback(e)
         }
     });
 }
 
-ContextStore.prototype.keys = function (scope, callback) {
-    if (!this.check(callback)) {
+ContextStore.prototype.keys = async function (scope, callback) {
+    if (!this.check(callback, true)) {
         return
     }
 
-    if (!callback) {
-        throw "this store only supports async operations";
-    }
-
+    scope = toNatsScope(scope);
     const subject = scope + ".>";
+
     this.kv.keys(subject).then((keys) => {
         const buf = [];
         (async () => {
             for await (const k of keys) {
-                buf.push(k.substring(scope.length+1));
+                buf.push(k.substring(scope.length + 1));
             }
             if (callback) {
                 callback(null, buf);
@@ -285,6 +303,7 @@ ContextStore.prototype.keys = function (scope, callback) {
         })();
 
     }).catch((e) => {
+        console.warn("nats-context: keys", scope, e);
         if (callback) {
             callback(e)
         }
@@ -292,7 +311,6 @@ ContextStore.prototype.keys = function (scope, callback) {
 }
 
 ContextStore.prototype.delete = function (scope) {
-    console.info("DELETE", scope);
     if (!this.check()) {
         return
     }
@@ -307,7 +325,7 @@ ContextStore.prototype.clean = function (_activeNodes) {
         return
     }
     var activeNodes = {};
-    _activeNodes.forEach(function(node) { activeNodes[toNatsScope(node)] = true });
+    _activeNodes.forEach(function (node) { activeNodes[node] = true });
 
     const subject = ">";
     this.kv.keys(subject).then((keys) => {
@@ -317,8 +335,11 @@ ContextStore.prototype.clean = function (_activeNodes) {
                     // allways keep global
                     continue;
                 }
-                if (!activeNodes.hasOwnProperty(k)) {
-                    console.debug("cleaning up", k);
+                const node = k.split(".")[1];
+                if (!activeNodes.hasOwnProperty(node)) {
+                    if (this.config.debug) {
+                        console.debug("cleaning up", node, k);
+                    }
                     await this.kv.purge(k);
                 }
             }
