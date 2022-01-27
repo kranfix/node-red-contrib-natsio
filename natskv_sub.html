@@ -13,13 +13,14 @@
       watch: { value: true },
       json: { value: true }
     },
-    inputs: 0,
+    inputs: 1,
     outputs: 2,
     icon: "fa-space-shuttle.svg",
     label: function () {
       return this.name || ("natskv-sub: " + this.view+" ("+ this.filterSubject+ ")");
     },
-    outputLabels: ["update", "delete"]
+    outputLabels: ["update", "delete"],
+    inputLabels: ["trigger"]
 
   });
 </script>

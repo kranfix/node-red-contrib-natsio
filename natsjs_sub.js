@@ -83,7 +83,7 @@ CONFIG:
             return
           }
           if (msg) {
-            node.send({ payload: msg, topic: msg.subject });
+            node.send({ payload: msg, topic: msg.subject }, false);
           }
         }
 

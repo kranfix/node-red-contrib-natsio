@@ -30,7 +30,7 @@ module.exports = function (RED) {
                 }
               }
             }
-            node.send({ payload: data, topic: m.subject, replyTo: m.reply });
+            node.send({ payload: data, topic: m.subject, replyTo: m.reply }, false);
           }
           await n.server.nc.closed
         })();
