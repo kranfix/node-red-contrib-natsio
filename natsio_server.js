@@ -20,12 +20,23 @@ module.exports = function (RED) {
     node.log("nats-initiate-connection");
 
     async function connect() {
+      var reconnectCount = 0;
+      if (node.nc && !node.nc.closed) {
+        try {
+          node.emit('Status', { fill: "yellow", shape: "ring", text: "closing" });
+          node.nc.close();
+          node.nc=0;
+        } catch {
+
+        }
+      }
+
       // console.log("nats: connect");
         nats.connect({
           'servers': servers,
           'maxReconnectAttempts': -1,
           'reconnectTimeWait': 250,
-          'timeout': 100000,
+          'timeout': 5000,
           'json': n.json,
           'name': "node-red",
           'debug': n.debug,
@@ -37,7 +48,7 @@ module.exports = function (RED) {
           node.emit('Status', { fill: "green", shape: "dot", text: "connected" });
           (async function () {
             for await (let st of statusEnum) {
-              node.log("nats-status: " + st.type);
+              // node.debug("nats-status: " + st.type);
               switch (st.type) {
                 case "disconnect":
                   node.emit('Status', { fill: "red", shape: "ring", text: "disconnected" })
@@ -49,14 +60,26 @@ module.exports = function (RED) {
                   node.emit('Status', { fill: "green", shape: "dot", text: "connected" });
                   break;
                 case "reconnecting":
-                  node.emit('Status', { fill: "yellow", shape: "ring", text: "connecting" });
+                  reconnectCount++
+                  if (reconnectCount > 5) {
+                    if (node.nc && !node.nc.closed) {
+                      node.emit('Status', { fill: "yellow", shape: "ring", text: "closing" });
+                      node.nc.close();
+                      node.nc = null;
+                      throw new ("failed to reconnect");
+                    }
+                    node.emit('Status', { fill: "yellow", shape: "ring", text: "reinialize" });  
+                    throw "execeeded reconnect tries";
+                  }
+                  node.emit('Status', { fill: "yellow", shape: "ring", text: "reconnecting ("+reconnectCount+")" });
                   break;
                 case "update":
                   // node.emit('Status', { fill: "green", shape: "ring", text: "updating" });
                   break;
                 case "close":
                   node.emit('Status', { fill: "red", shape: "dot", text: "closing" })
-                  if (node.nc || !node.nc.closed) {
+                  if (node.nc && !node.nc.closed) {
+                    node.emit('Status', { fill: "yellow", shape: "ring", text: "closing" });
                     node.nc.close();
                   }
                   node.nc = null;
@@ -72,9 +95,7 @@ module.exports = function (RED) {
           connect();
         })
       }
-
       connect();
-
   }
 
   RED.nodes.registerType('natsio-server', NatsServerNode, {

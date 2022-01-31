@@ -11,6 +11,7 @@
     "node": ">=12"
   },
   "dependencies": {
+    "async-mutex": "0.3.2",
     "nats": "^2.5.0"
   },
   "keywords": [

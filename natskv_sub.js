@@ -1,3 +1,5 @@
+var Mutex = require('async-mutex').Mutex;
+
 module.exports = function (RED) {
 
   function NatsKVSubNode(n) {
@@ -6,6 +8,7 @@ module.exports = function (RED) {
     node.kv = null;
     node.server = RED.nodes.getNode(n.server);
     node.server.setMaxListeners(node.server.getMaxListeners() + 1);
+    node.mutex = new Mutex();
 
     function sendValue(entry, fromRefresh) {
       if (entry) {
@@ -27,7 +30,10 @@ module.exports = function (RED) {
           } else {
             result = { payload: null, topic: n.view + "." + entry.operation + "." + entry.key }
           }
-          node.send(result);
+          node.mutex .runExclusive(() => {
+            node.send(result) 
+          });
+          
         } catch (reason) {
           node.log("nats-watch error: " + reason);
         }
@@ -39,16 +45,24 @@ module.exports = function (RED) {
     async function refresh() {
       if (node.kv) {
         node.emit('Status', { fill: "green", shape: "dot", text: "refresh" });
-        const kv = node.kv
-        const keys = await kv.keys();
-        if (keys) {
-          for await (const key of keys) {
-            kv.get(key).then((msg) => {
-              sendValue(msg)
-            }).catch((reason) => {
-              node.log("nats-watch error: " + reason);
-            });
+        const release = await node.mutex.acquire();
+        try {
+        
+          node.send({ payload: null, topic: n.view + ".REFRESH.START" });
+          const kv = node.kv
+          const keys = await kv.keys();
+          if (keys) {
+            for await (const key of keys) {
+              kv.get(key).then((msg) => {
+                sendValue(msg)
+              }).catch((reason) => {
+                node.log("nats-watch error: " + reason);
+              });
+            }
           }
+          node.send({ payload: null, topic: n.view + ".REFRESH.END" });
+        } finally {
+          release();
         }
         node.emit('Status', { fill: "green", shape: "dot", text: "connected" });
       }
