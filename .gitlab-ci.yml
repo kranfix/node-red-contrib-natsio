@@ -1,0 +1,14 @@
+include:
+  - project: 'exanio/gitlab/ci-templates'
+    ref: main
+    file: '/.gitlab-ci-sonar.yml'
+  - project: 'exanio/gitlab/ci-templates'
+    ref: main
+    file: '/.gitlab-ci-node-publish.yml'
+    
+
+image: docker.autonubil.net/shared/magarac:latest
+
+stages:
+  - validate
+  - release
